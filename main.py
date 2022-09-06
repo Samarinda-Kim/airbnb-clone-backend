@@ -22,13 +22,16 @@ nico_fan = Fan("nico_fan", "dontknow")
 nico_fan.say_hello()
 
 class Dog:
-    def woof(self):
-        print("woof woof")
+    def __init__(self, name):
+        self.name = name
+    def __str__(self):
+        return f"Dog: {self.name}"
+    def __getattribute__(self, name):
+        print(f"they want to get {name}")
+        return "😂"
 
-class Beagle(Dog):
-    def woof(self):
-        super().woof()
-        print("beagle woof")
-
-beagle = Beagle()
-beagle.woof()
+jia = Dog("jia")
+# print(dir(jia))
+print(jia.name)
+# paul = Dog("paul")
+# print(paul)
