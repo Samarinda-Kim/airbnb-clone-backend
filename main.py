@@ -20,3 +20,15 @@ nico_player = Player("nico", 10)
 nico_player.say_hello()
 nico_fan = Fan("nico_fan", "dontknow")
 nico_fan.say_hello()
+
+class Dog:
+    def woof(self):
+        print("woof woof")
+
+class Beagle(Dog):
+    def woof(self):
+        super().woof()
+        print("beagle woof")
+
+beagle = Beagle()
+beagle.woof()
