@@ -60,6 +60,19 @@ class Room(CommonModel):
     def total_amenities(self):
         return self.amenities.count()
 
+    # 꼭 argument가 self일 필요는 없음
+    def rating(room):
+        count = room.reviews.count()
+        if count == 0:
+            return "No Reviews"
+        else:
+            total_rating = 0
+            print(room.reviews.all().values("rating"))
+            print(room.reviews.all())
+            for review in room.reviews.all().values("rating"):
+                total_rating += review["rating"]
+            return round(total_rating / count, 2)
+
 
 class Amenity(CommonModel):
 
