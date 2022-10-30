@@ -1,3 +1,4 @@
+from django.conf import settings
 from tkinter.font import ROMAN
 from rest_framework.views import APIView
 from django.db import transaction
@@ -212,7 +213,7 @@ class RoomAmenities(APIView):
             page = int(page)
         except ValueError:
             page = 1
-        page_size = 3
+        page_size = settings.PAGE_SIZE
         start = (page - 1) * page_size
         end = start + page_size
         room = self.get_object(pk)
@@ -221,3 +222,8 @@ class RoomAmenities(APIView):
             many=True,
         )
         return Response(serializer.data)
+
+
+class RoomPhotos(APIView):
+    def post(self, request, pk):
+        pass
