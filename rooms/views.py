@@ -13,8 +13,8 @@ from rest_framework.exceptions import (
 )
 from .models import Amenity, Room
 from categories.models import Category
-from .serializer import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
-from rooms import serializer
+from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
+from rooms import serializers
 from reviews.serializers import ReviewSerializer
 from medias.serializers import PhotoSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
