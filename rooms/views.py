@@ -259,3 +259,8 @@ class RoomPhotos(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.erroes)
+
+
+class RoomBookings(APIView):
+
+    permission_classes = []
