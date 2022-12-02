@@ -26,15 +26,15 @@ from bookings.serializers import PublicBookingSerializer, CreateRoomBookingSeria
 class Amenities(APIView):
     def get(self, request):
         all_amenities = Amenity.objects.all()
-        serializer = serializers.RAmenitySerializer(all_amenities, many=True)
+        serializer = serializers.AmenitySerializer(all_amenities, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = serializers.RAmenitySerializer(data=request.data)
+        serializer = serializers.AmenitySerializer(data=request.data)
         if serializer.is_valid():
             amenity = serializer.save()
             return Response(
-                serializers.RAmenitySerializer(amenity).data,
+                serializers.AmenitySerializer(amenity).data,
             )
         else:
             return Response(serializer.errors)
@@ -49,12 +49,12 @@ class AmenityDetail(APIView):
 
     def get(self, request, pk):
         amenity = self.get_object(pk)
-        serializer = serializers.RAmenitySerializer(amenity)
+        serializer = serializers.AmenitySerializer(amenity)
         return Response(serializer.data)
 
     def put(self, request, pk):
         amenity = self.get_object(pk)
-        serializer = serializers.RAmenitySerializer(
+        serializer = serializers.AmenitySerializer(
             amenity,
             data=request.data,
             partial=True,
@@ -62,7 +62,7 @@ class AmenityDetail(APIView):
         if serializer.is_valid():
             updated_amenity = serializer.save()
             return Response(
-                serializers.RAmenitySerializer(updated_amenity).data,
+                serializers.AmenitySerializer(updated_amenity).data,
             )
         else:
             return Response(serializer.errors)
@@ -79,7 +79,7 @@ class Rooms(APIView):
 
     def get(self, request):
         all_rooms = Room.objects.all()
-        serializer = serializers.RRoomListSerializer(
+        serializer = serializers.RoomListSerializer(
             all_rooms,
             many=True,
             context={"request": request},
@@ -87,7 +87,7 @@ class Rooms(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = serializers.RRoomDetailSerializer(data=request.data)
+        serializer = serializers.RoomDetailSerializer(data=request.data)
         if serializer.is_valid():
             category_pk = request.data.get("category")
             if not category_pk:
@@ -108,7 +108,7 @@ class Rooms(APIView):
                     for amenity_pk in amenities:
                         amenity = Amenity.objects.get(pk=amenity_pk)
                         room.amenities.add(amenity)
-                    serializer = serializers.RRoomDetailSerializer(room)
+                    serializer = serializers.RoomDetailSerializer(room)
                     return Response(serializer.data)
             except Exception:
                 raise ParseError("Amenity not found")
@@ -128,7 +128,7 @@ class RoomDetail(APIView):
 
     def get(self, request, pk):
         room = self.get_object(pk)
-        serializer = serializers.RRoomDetailSerializer(
+        serializer = serializers.RoomDetailSerializer(
             room,
             context={"request": request},
         )
@@ -138,7 +138,7 @@ class RoomDetail(APIView):
         room = self.get_object(pk)
         if room.owner != request.user:
             raise PermissionDenied
-        serializer = serializers.RRoomDetailSerializer(
+        serializer = serializers.RoomDetailSerializer(
             room,
             data=request.data,
             partial=True,
@@ -234,7 +234,7 @@ class RoomAmenities(APIView):
         start = (page - 1) * page_size
         end = start + page_size
         room = self.get_object(pk)
-        serializer = serializers.RAmenitySerializer(
+        serializer = serializers.AmenitySerializer(
             room.amenities.all()[start:end],
             many=True,
         )
@@ -261,7 +261,7 @@ class RoomPhotos(APIView):
             serializer = PhotoSerializer(photo)
             return Response(serializer.data)
         else:
-            return Response(serializer.erroes)
+            return Response(serializer.errors)
 
 
 class RoomBookings(APIView):

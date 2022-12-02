@@ -10,10 +10,17 @@ class ExperienceAdmin(admin.ModelAdmin):
         "price",
         "start",
         "end",
+        "host",
         "created_at",
     )
 
-    list_filter = ("category",)
+    list_filter = (
+        "category",
+        "city",
+        "perks",
+        "created_at",
+        "updated_at",
+    )
 
 
 @admin.register(Perk)
@@ -22,4 +29,9 @@ class PerkAdmin(admin.ModelAdmin):
         "name",
         "details",
         "explanation",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
     )
