@@ -10,6 +10,7 @@ class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Amenity
         fields = (
+            "pk",
             "name",
             "description",
         )
@@ -25,7 +26,6 @@ class RoomDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(
         read_only=True,
     )
-
     rating = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
@@ -34,21 +34,25 @@ class RoomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = "__all__"
-        depth = 1
 
     def get_rating(self, room):
         return room.rating()
 
     def get_is_owner(self, room):
-        request = self.context["request"]
-        return room.owner == request.user
+        request = self.context.get("request")
+        if request:
+            return room.owner == request.user
+        return False
 
     def get_is_liked(self, room):
-        request = self.context["request"]
-        return Wishlist.objects.filter(
-            user=request.user,
-            rooms__pk=room.pk,
-        ).exists()
+        request = self.context.get("request")
+        if request:
+            if request.user.is_authenticated:
+                return Wishlist.objects.filter(
+                    user=request.user,
+                    rooms__pk=room.pk,
+                ).exists()
+        return False
 
 
 class RoomListSerializer(serializers.ModelSerializer):

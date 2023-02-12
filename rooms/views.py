@@ -1,3 +1,4 @@
+import time
 from ast import Is, Not
 from django.conf import settings
 from django.utils import timezone
@@ -101,7 +102,7 @@ class Rooms(APIView):
             try:
                 category = Category.objects.get(pk=category_pk)
                 if category.kind == Category.CategoryKindChoices.EXPERIENCES:
-                    raise ParseError("The Category kind should be 'rooms'")
+                    raise ParseError("The category kind should be 'rooms'")
             except Category.DoesNotExist:
                 raise ParseError("Category not found")
             try:
@@ -112,11 +113,15 @@ class Rooms(APIView):
                     )
                     amenities = request.data.get("amenities")
                     for amenity_pk in amenities:
+
                         amenity = Amenity.objects.get(pk=amenity_pk)
                         room.amenities.add(amenity)
-                    serializer = serializers.RoomDetailSerializer(room)
+                    serializer = serializers.RoomDetailSerializer(
+                        room,
+                        context={"request": request},
+                    )
                     return Response(serializer.data)
-            except Exception:
+            except Exception as e:
                 raise ParseError("Amenity not found")
         else:
             return Response(
@@ -136,6 +141,7 @@ class RoomDetail(APIView):
             raise NotFound
 
     def get(self, request, pk):
+        time.sleep(1)
         room = self.get_object(pk)
         serializer = serializers.RoomDetailSerializer(
             room,
