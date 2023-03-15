@@ -96,7 +96,10 @@ class LogIn(APIView):
             login(request, user)
             return Response({"ok": "Welcome!"})
         else:
-            return Response({"error": "wrong password"})
+            return Response(
+                {"error": "wrong password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class LogOut(APIView):
@@ -213,6 +216,39 @@ class KakaoLogIn(APIView):
                 user.set_unusable_password()
                 user.save()
                 login(request, user)
+                return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignUp(APIView):
+    def post(self, request):
+        try:
+            username = request.data.get("username")
+            password = request.data.get("password")
+            email = request.data.get("email")
+            name = request.data.get("name")
+            gender = request.data.get("gender")
+            language = request.data.get("language")
+            currency = request.data.get("currency")
+            if not username or not password or not email or not name:
+                raise ParseError
+
+            try:
+                user = User.objects.get(username=username)
+                user = User.objects.get(email=email)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    username=username,
+                    password=password,
+                    email=email,
+                    name=name,
+                    gender=gender,
+                    language=language,
+                    currency=currency,
+                )
+                user.save()
                 return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
